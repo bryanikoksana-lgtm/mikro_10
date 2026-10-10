@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секретна лабораторія: Інтерпретація мікрофотографій</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60;
+            --accent: #e74c3c;
+            --bg: #ecf0f1;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a252f, var(--primary));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary);
+        }
+
+        h1 { margin: 0 0 10px 0; font-size: 2.2em; }
+        h2 { color: var(--primary); border-bottom: 2px solid var(--secondary); padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .theory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .img-container {
+            width: 100%;
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            height: 300px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-container svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 8px 0;
+            font-size: 0.9em;
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .task-box {
+            background: #fdfbf7;
+            border-left: 5px solid #f39c12;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button.check-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        button.check-btn:hover { background-color: #219a52; }
+
+        .feedback {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+        }
+        .correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .scale-bar-container {
+            position: absolute;
+            bottom: 45px;
+            right: 15px;
+            background: rgba(255,255,255,0.95);
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 3;
+        }
+        .scale-line {
+            width: 60px;
+            height: 4px;
+            background: black;
+            margin: 0 auto;
+        }
+        .scale-text {
+            color: black;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .theory-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🔍 Секретна лабораторія: Інтерпретація мікрофотографій</h1>
+    <p>Сьогодні ми вирушимо у світ найдрібніших структур, де наука допомагає побачити невидиме!</p>
+</header>
+
+<div class="container">
+
+    <!-- ТЕОРІЯ -->
+    <div class="card">
+        <h2>📖 Теоретичний довідник слідчого</h2>
+        <div class="theory-grid">
+            <div>
+                <h3>1. Трансмісійний електронний (ТЕМ)</h3>
+                <ul>
+                    <li><strong>Як працює:</strong> Електрони проходять <em>крізь</em> тонкий зріз.</li>
+                    <li><strong>Що бачимо:</strong> Пласке (2D) зображення внутрішньої будови.</li>
+                </ul>
+                <div class="img-container">
+                    <!-- Схема ТЕМ Мітохондрії (2D зріз) -->
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#141923"/>
+                        <ellipse cx="150" cy="100" rx="120" ry="70" fill="#1e293b" stroke="#64748b" stroke-width="4"/>
+                        <path d="M 50 100 Q 70 50, 95 100 T 140 100 T 185 100 T 230 100 T 250 100" fill="none" stroke="#38bdf8" stroke-width="3"/>
+                        <path d="M 60 75 Q 85 125, 110 75 T 160 75 T 210 75" fill="none" stroke="#34d399" stroke-width="2.5"/>
+                        <path d="M 65 125 Q 90 75, 120 125 T 175 125 T 225 125" fill="none" stroke="#f43f5e" stroke-width="2.5"/>
+                        <text x="150" y="30" fill="#94a3b8" font-size="12" text-anchor="middle">2D зріз: Внутрішні кристи (ТЕМ)</text>
+                    </svg>
+                    <div class="caption">Приклад ТЕМ: Мітохондрія</div>
+                </div>
+            </div>
+            <div>
+                <h3>2. Скануючий електронний (СЕМ)</h3>
+                <ul>
+                    <li><strong>Як працює:</strong> Електрони відбиваються від <em>поверхні</em>.</li>
+                    <li><strong>Що бачимо:</strong> Об'ємне (3D) зображення рельєфу.</li>
+                </ul>
+                <div class="img-container">
+                    <!-- Схема СЕМ Пилку (3D поверхня) -->
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#0a0f1d"/>
+                        <defs>
+                            <radialGradient id="pollenGrad" cx="35%" cy="35%" r="65%">
+                                <stop offset="0%" stop-color="#fbbf24"/>
+                                <stop offset="60%" stop-color="#d97706"/>
+                                <stop offset="100%" stop-color="#78350f"/>
+                            </radialGradient>
+                        </defs>
+                        <circle cx="150" cy="100" r="65" fill="url(#pollenGrad)"/>
+                        <!-- Рельєфні шипи -->
+                        <polygon points="150,25 143,40 157,40" fill="#f59e0b"/>
+                        <polygon points="215,100 200,93 200,107" fill="#f59e0b"/>
+                        <polygon points="85,100 100,93 100,107" fill="#f59e0b"/>
+                        <polygon points="150,175 143,160 157,160" fill="#f59e0b"/>
+                        <polygon points="105,55 118,65 110,72" fill="#d97706"/>
+                        <polygon points="195,55 182,65 190,72" fill="#d97706"/>
+                        <text x="150" y="25" fill="#94a3b8" font-size="12" text-anchor="middle">3D поверхня: Рельєф (СЕМ)</text>
+                    </svg>
+                    <div class="caption">Приклад СЕМ: Пилкове зерно</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ПРАКТИКА -->
+    <div class="card">
+        <h2>🕵️‍♀️ Секретні місії (Завдання)</h2>
+        
+        <!-- Завдання 1 -->
+        <div class="task-box">
+            <h3>Справа №1: ТЕМ чи СЕМ?</h3>
+            <p>Розгляньте два зображення. Визначте тип мікроскопії для кожного.</p>
+            
+            <div class="theory-grid" style="margin-bottom: 15px;">
+                <div class="img-container">
+                    <!-- Хлоропласт (ТЕМ) -->
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#0f172a"/>
+                        <ellipse cx="150" cy="100" rx="130" ry="75" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+                        <g fill="#047857" stroke="#34d399" stroke-width="1.5">
+                            <rect x="55" y="70" width="35" height="7" rx="2"/>
+                            <rect x="55" y="80" width="35" height="7" rx="2"/>
+                            <rect x="55" y="90" width="35" height="7" rx="2"/>
+                            <rect x="55" y="100" width="35" height="7" rx="2"/>
+
+                            <rect x="132" y="65" width="38" height="7" rx="2"/>
+                            <rect x="132" y="75" width="38" height="7" rx="2"/>
+                            <rect x="132" y="85" width="38" height="7" rx="2"/>
+                            <rect x="132" y="95" width="38" height="7" rx="2"/>
+
+                            <rect x="210" y="75" width="35" height="7" rx="2"/>
+                            <rect x="210" y="85" width="35" height="7" rx="2"/>
+                            <rect x="210" y="95" width="35" height="7" rx="2"/>
+                        </g>
+                    </svg>
+                    <div class="caption">Фото А (Хлоропласт)</div>
+                </div>
+                <div class="img-container">
+                    <!-- Еритроцити (СЕМ) -->
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#1a0505"/>
+                        <defs>
+                            <radialGradient id="rbc" cx="35%" cy="35%" r="65%">
+                                <stop offset="0%" stop-color="#f87171"/>
+                                <stop offset="60%" stop-color="#dc2626"/>
+                                <stop offset="100%" stop-color="#7f1d1d"/>
+                            </radialGradient>
+                        </defs>
+                        <ellipse cx="115" cy="100" rx="55" ry="45" fill="url(#rbc)"/>
+                        <ellipse cx="115" cy="100" rx="22" ry="16" fill="#450a0a" opacity="0.9"/>
+                        
+                        <ellipse cx="200" cy="120" rx="48" ry="38" fill="url(#rbc)"/>
+                        <ellipse cx="200" cy="120" rx="18" ry="13" fill="#450a0a" opacity="0.9"/>
+                    </svg>
+                    <div class="caption">Фото Б (Еритроцити)</div>
+                </div>
+            </div>
+
+            <label>Фото А зроблено за допомогою:</label>
+            <select id="q1a">
+                <option value="">Оберіть...</option>
+                <option value="tem">ТЕМ (зріз, внутрішня будова)</option>
+                <option value="sem">СЕМ (3D, поверхня)</option>
+            </select>
+
+            <label>Фото Б зроблено за допомогою:</label>
+            <select id="q1b">
+                <option value="">Оберіть...</option>
+                <option value="tem">ТЕМ (зріз, внутрішня будова)</option>
+                <option value="sem">СЕМ (3D, поверхня)</option>
+            </select>
+            <div id="fb1" class="feedback"></div>
+        </div>
+
+        <!-- Завдання 2 -->
+        <div class="task-box">
+            <h3>Справа №2: Масштаб має значення 📏</h3>
+            <p>Дослідник надав фотографію бактерії. У куті є лінійка масштабу, яка дорівнює <strong>2 мкм</strong>. Візуально бактерія в довжину рівно <strong>в 4 рази</strong> більша за цю лінійку. Яка реальна довжина бактерії?</p>
+            
+            <div class="img-container" style="max-width: 500px; margin: 0 auto 15px auto;">
+                <!-- Бактерія -->
+                <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#061a14"/>
+                    <defs>
+                        <linearGradient id="bac" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#34d399"/>
+                            <stop offset="100%" stop-color="#059669"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="30" y="70" width="240" height="60" rx="30" fill="url(#bac)" stroke="#6ee7b7" stroke-width="2"/>
+                    <path d="M 30 100 Q 10 75, -5 95" fill="none" stroke="#94a3b8" stroke-width="2"/>
+                    <path d="M 30 110 Q 5 130, -10 115" fill="none" stroke="#94a3b8" stroke-width="2"/>
+                </svg>
+                <div class="scale-bar-container">
+                    <div class="scale-line"></div>
+                    <div class="scale-text">2 мкм</div>
+                </div>
+            </div>
+
+            <label>Довжина бактерії (введіть тільки число):</label>
+            <input type="number" id="q2" placeholder="Наприклад: 5">
+            <div id="fb2" class="feedback"></div>
+        </div>
+
+        <!-- Завдання 3 -->
+        <div class="task-box">
+            <h3>Справа №3: Пізнай підозрюваного 🦠</h3>
+            <p>На мікрофотографії ви бачите велику структуру всередині клітини. Її оболонка має пори, а всередині видно темну ущільнену ділянку. Що це?</p>
+            
+            <div class="img-container" style="max-width: 500px; margin: 0 auto 15px auto;">
+                <!-- Ядро клітини -->
+                <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#0f172a"/>
+                    <circle cx="150" cy="100" r="75" fill="#334155" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="10 5"/>
+                    <circle cx="130" cy="90" r="25" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+                    <path d="M 95 130 Q 125 105, 145 140 T 195 110" fill="none" stroke="#64748b" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <label>Назва органели:</label>
+            <select id="q3">
+                <option value="">Оберіть...</option>
+                <option value="mitochondria">Мітохондрія</option>
+                <option value="nucleus">Ядро</option>
+                <option value="chloroplast">Хлоропласт</option>
+                <option value="ribosome">Рибосома</option>
+            </select>
+            <div id="fb3" class="feedback"></div>
+        </div>
+
+        <button class="check-btn" onclick="checkAnswers()">Завершити розслідування 🔎</button>
+    </div>
+
+</div>
+
+<script>
+    function checkAnswers() {
+        const q1a = document.getElementById('q1a').value;
+        const q1b = document.getElementById('q1b').value;
+        const fb1 = document.getElementById('fb1');
+        fb1.style.display = 'block';
+        
+        if (q1a === 'tem' && q1b === 'sem') {
+            fb1.className = 'feedback correct';
+            fb1.innerHTML = '✅ Справа №1 розкрита! Фото А — це ТЕМ (видно зріз хлоропласта), а Фото Б — СЕМ (видно об\'ємні клітини крові).';
+        } else {
+            fb1.className = 'feedback incorrect';
+            fb1.innerHTML = '❌ Справа №1: Є помилка. Згадайте: 2D зріз — це ТЕМ, 3D поверхня — це СЕМ.';
+        }
+
+        const q2 = document.getElementById('q2').value;
+        const fb2 = document.getElementById('fb2');
+        fb2.style.display = 'block';
+
+        if (q2 === '8') {
+            fb2.className = 'feedback correct';
+            fb2.innerHTML = '✅ Справа №2 розкрита! Якщо 1 відрізок = 2 мкм, то 4 відрізки: 2 × 4 = 8 мкм.';
+        } else {
+            fb2.className = 'feedback incorrect';
+            fb2.innerHTML = '❌ Справа №2: Математична помилка. Помножте довжину лінійки (2 мкм) на кількість разів (4).';
+        }
+
+        const q3 = document.getElementById('q3').value;
+        const fb3 = document.getElementById('fb3');
+        fb3.style.display = 'block';
+
+        if (q3 === 'nucleus') {
+            fb3.className = 'feedback correct';
+            fb3.innerHTML = '✅ Справа №3 розкрита! Це Ядро. Темна пляма всередині — це ядерце, а оболонка має характерні пори.';
+        } else {
+            fb3.className = 'feedback incorrect';
+            fb3.innerHTML = '❌ Справа №3: Невірно. Зверніть увагу на великий розмір, пори в мембрані та наявність ядерця всередині.';
+        }
+    }
+</script>
+
+</body>
+</html>
